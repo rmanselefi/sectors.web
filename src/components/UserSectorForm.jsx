@@ -107,11 +107,6 @@ const UserSectorForm = () => {
     >
       <div className="row">
         <Card title="User Sector Form" style={{ width: 300 }}>
-          {selectedSectors.length > 0 && (
-            <div style={{ marginBottom: 16 }}>
-              You selected: {selectedSectors}
-            </div>
-          )}
           <Form form={form} onFinish={onFinish} layout="vertical">
             <Form.Item
               label="Name"
