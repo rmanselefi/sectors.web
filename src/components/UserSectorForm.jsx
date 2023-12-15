@@ -75,7 +75,10 @@ const UserSectorForm = () => {
   const [editingKey, setEditingKey] = useState(""); // Key of the editing row
 
   const edit = (record) => {
-    form.setFieldsValue({ name: "", sectors: [], ...record });
+    console.log("record===>", record);
+    const sectors = record.sectors.split(", ");
+    record.sectors = sectors;
+    form.setFieldsValue({ name: "", sectors:[], ...record });
     setEditingKey(record.id);
     setEditing(true);
   };
