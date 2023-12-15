@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, Select, Checkbox, Button, Card, Table } from "antd";
 import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 
 const { Option } = Select;
@@ -15,9 +14,10 @@ const UserSectorForm = () => {
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/sectors/all`).then((res) => {
-      setSectors(res.data);
-    });
+    fetch(`${process.env.REACT_APP_API_URL}/sectors/all`)
+      .then((response) => response.json())
+      .then((data) => setSectors(data))
+      .catch((error) => console.error("Error fetching data: ", error));
   }, []);
 
   const onFinish = (values) => {
@@ -29,38 +29,37 @@ const UserSectorForm = () => {
 
     if (editing) {
       formData.id = editingKey;
-      axios
-        .put(
-          `${process.env.REACT_APP_API_URL}/sectors/edit`,
-          JSON.stringify(formData),
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        )
-        .then((response) => {
+      fetch(`${process.env.REACT_APP_API_URL}/sectors/edit`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
           toast.success("Data updated successfully!");
-          setSubmissions([
-            ...submissions,
-            { ...response.data, key: submissions.length },
-          ]);
+          setSubmissions(
+            submissions.map((submission) =>
+              submission.id === editingKey ? { ...data } : submission
+            )
+          );
           form.resetFields();
           setEditing(false);
+          setEditingKey("");
         })
         .catch((error) => toast.error("Error updating data!"));
+      return;
     } else {
-      axios
-        .post(
-          `${process.env.REACT_APP_API_URL}/sectors`,
-          JSON.stringify(formData),
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        )
-        .then((response) => {
+      fetch(`${process.env.REACT_APP_API_URL}/sectors`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
           toast.success("Data saved successfully!");
           setSubmissions([
             ...submissions,
-            { ...response.data, key: submissions.length },
+            { ...data, key: submissions.length },
           ]);
           form.resetFields();
         })
