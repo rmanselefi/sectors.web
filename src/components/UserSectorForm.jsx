@@ -76,7 +76,7 @@ const UserSectorForm = () => {
 
   const edit = (record) => {
     form.setFieldsValue({ name: "", sectors: [], ...record });
-    setEditingKey(record.key);
+    setEditingKey(record.id);
     setEditing(true);
   };
 
