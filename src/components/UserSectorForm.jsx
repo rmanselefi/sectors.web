@@ -24,6 +24,7 @@ const UserSectorForm = () => {
     const formData = {
       ...values,
       sectors: selectedSectors,
+      id: "",
     };
 
     if (editing) {
